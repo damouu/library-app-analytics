@@ -16,7 +16,7 @@
 
     <name>図書館 Analytics Service</name>
     <description>
-        図書館システムの書籍データ在庫の状況を提供し、 フロントエンドに在庫状況を供給するAPI。
+        図書館システムの分析のサービスです。貸出の時間帯データお通じてランキングのデータ賛成されて通信されます。
     </description>
 
     <properties>

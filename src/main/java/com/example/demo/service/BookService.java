@@ -1,61 +1,59 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.BookToDecrement;
 import com.example.demo.dto.BorrowEventPayload;
-import com.example.demo.dto.ReturnEventPayload;
-import com.example.demo.model.Book;
-import com.example.demo.repository.BookRepository;
+import com.example.demo.dto.ChapterBorrowCountDTO;
+import com.example.demo.model.Borrow;
+import com.example.demo.repository.BorrowRepository;
+import com.example.demo.utils.PaginationUtil;
 import lombok.Data;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 
 
 @Data
 @Service
 public class BookService {
 
-    private final BookRepository bookRepository;
+    private final BorrowRepository borrowRepository;
 
-    /**
-     * find a book by the passed UUID.
-     *
-     * @param chapterUuid a book's UUID
-     * @return Array returns if the given UUID exists, a book resource and also attach to it, the studentCard associated to it.
-     * @throws ResponseStatusException throws an exception if the given UUID does not correspond to a book in the database.
-     */
-    public ResponseEntity<Book> checkChapterInventory(UUID chapterUuid) throws ResponseStatusException {
-        Book book = bookRepository.findFirstByChapterUUIDAndDeletedDateIsNullAndCurrentlyBorrowedIsFalse(chapterUuid).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "book not found"));
-        return ResponseEntity.ok(book);
+    private final KafkaPayloadBuilderService payloadBuilderService;
+
+
+    public void borrowBooks(BorrowEventPayload booksArrayJson) {
+        List<Borrow> borrows = payloadBuilderService.buildBorrowEntities(booksArrayJson);
+        borrowRepository.saveAll(borrows);
     }
 
+    public ResponseEntity<?> topChapters(Map allParams, String period) {
+        LocalDate startDate, end, endDate;
+        Pageable pageable = PaginationUtil.extractPage(allParams);
 
-    /**
-     * Listener borrow books.
-     *
-     * @param borrowPayloadData the borrowed data
-     */
-    @Transactional
-    public void listenerBorrowBooks(BorrowEventPayload borrowPayloadData, Boolean isBorrowed) {
-        List<UUID> booksUuidToBorrow = borrowPayloadData.getData().getInventoryData().getBooks().stream().map(BookToDecrement::getBook_uuid).toList();
-        bookRepository.updateBorrowedStatusInBatch(booksUuidToBorrow, isBorrowed);
-    }
+        switch (period.toLowerCase()) {
+            case "lastweek":
+                LocalDate today = LocalDate.now();
+                startDate = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).minusWeeks(1);
+                end = startDate.plusDays(6);
+                break;
+            case "lastmonth":
+                startDate = LocalDate.from(LocalDate.now().minusMonths(1).withDayOfMonth(1).atStartOfDay());
+                endDate = LocalDate.now().minusMonths(1);
+                end = endDate.withDayOfMonth(endDate.lengthOfMonth());
+                break;
+            default:
+                LocalDate startOfWeek = LocalDate.now();
+                startDate = startOfWeek.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+                end = startDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
+        }
 
-
-    /**
-     * Listener borrow books.
-     *
-     * @param returnEventPayload the borrowed data
-     */
-    @Transactional
-    public void listenerReturnBorrowedBooks(ReturnEventPayload returnEventPayload, Boolean isBorrowed) {
-        List<UUID> booksUuidToBorrow = returnEventPayload.getData().getInventoryData().getBooks().stream().map(BookToDecrement::getBook_uuid).toList();
-        bookRepository.updateBorrowedStatusInBatch(booksUuidToBorrow, isBorrowed);
+        List<ChapterBorrowCountDTO> topBorrowedChapters = borrowRepository.getTopBorrowedChapters(startDate, end, pageable);
+        return ResponseEntity.ok(topBorrowedChapters);
     }
 
 }
