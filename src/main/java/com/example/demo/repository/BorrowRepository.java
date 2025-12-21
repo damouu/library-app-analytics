@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 public interface BorrowRepository extends JpaRepository<Borrow, Integer>, JpaSpecificationExecutor<Borrow> {
 
-    @Query("SELECT new com.example.demo.dto.ChapterBorrowCountDTO(b.chapterUUID, COUNT(b.id)) " + "FROM Borrow b " + "WHERE b.borrowDate BETWEEN :startWeek AND :endWeek " + "GROUP BY b.chapterUUID " + "ORDER BY COUNT(b.id) DESC")
+    @Query("SELECT new com.example.demo.dto.ChapterBorrowCountDTO(b.chapterUuID, COUNT(b.id), b.chapterTitle, b.chapterSecondTitle, b.chapterNumber, b.chapterCoverUrl) " + "FROM Borrow b " + "WHERE b.borrowDate BETWEEN :startWeek AND :endWeek " + "GROUP BY b.chapterUuID, b.chapterTitle, b.chapterSecondTitle, b.chapterNumber, b.chapterCoverUrl " + "ORDER BY COUNT(b.id) DESC")
     List<ChapterBorrowCountDTO> getTopBorrowedChapters(@Param("startWeek") LocalDate startWeek, @Param("endWeek") LocalDate endWeek, Pageable pageable);
 
 }
