@@ -11,6 +11,6 @@ import java.util.List;
 public class KafkaPayloadBuilderService {
 
     public List<Borrow> buildBorrowEntities(BorrowEventPayload booksArrayJson) {
-        return booksArrayJson.getData().getNotificationData().getChapters().stream().map(details -> Borrow.builder().borrowDate(LocalDate.parse(booksArrayJson.getData().getNotificationData().getBorrow_start_date())).chapterUUID(details.getChapterUUID()).build()).toList();
+        return booksArrayJson.getData().getNotificationData().getChapters().stream().map(details -> Borrow.builder().borrowDate(LocalDate.parse(booksArrayJson.getData().getNotificationData().getBorrow_start_date())).chapterUuID(details.getChapterUUID()).chapterCoverUrl(details.getChapterCoverUrl()).chapterNumber(details.getChapterNumber()).chapterTitle(details.getChapterTitle()).chapterSecondTitle(details.getChapterSecondTitle()).build()).toList();
     }
 }
