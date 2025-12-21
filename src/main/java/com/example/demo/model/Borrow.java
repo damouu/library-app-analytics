@@ -26,16 +26,25 @@ public class Borrow {
     @SequenceGenerator(name = "book_sequence", allocationSize = 1, sequenceName = "book_sequence")
     private int id;
 
-    @Column(nullable = false, columnDefinition = "UUID", name = "chapter_uuid")
-    @Getter
-    @Setter
-    private UUID chapterUUID;
+    @Column(nullable = false)
+    private UUID chapterUuID;
 
-    @Column(name = "borrow_date", nullable = false, columnDefinition = "Date")
+    @Column(nullable = false)
+    private String chapterTitle;
+
+    @Column(nullable = false)
+    private String chapterSecondTitle;
+
+    @Column(nullable = false)
+    private int chapterNumber;
+
+    @Column(nullable = false)
+    private String chapterCoverUrl;
+
+    @Column(nullable = false)
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     @Getter(onMethod = @__(@JsonIgnore))
-    @Setter
     private LocalDate borrowDate;
 
 
