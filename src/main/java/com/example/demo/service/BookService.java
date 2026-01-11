@@ -5,7 +5,7 @@ import com.example.demo.dto.ChapterBorrowCountDTO;
 import com.example.demo.model.Borrow;
 import com.example.demo.repository.BorrowRepository;
 import com.example.demo.utils.PaginationUtil;
-import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 
-@Data
 @Service
+@RequiredArgsConstructor
 public class BookService {
 
     private final BorrowRepository borrowRepository;
