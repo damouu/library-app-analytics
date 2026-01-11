@@ -17,7 +17,7 @@ public class KafkaListeners {
     }
 
     @KafkaListener(topics = "library.borrow.v1", groupId = "analytics-group", containerFactory = "factory")
-    void listenerBorrow(@Payload BorrowEventPayload BorrowEventPayload) {
+    public void listenerBorrow(@Payload BorrowEventPayload BorrowEventPayload) {
         bookService.borrowBooks(BorrowEventPayload);
     }
 }
