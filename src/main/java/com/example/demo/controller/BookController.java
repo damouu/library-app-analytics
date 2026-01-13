@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.service.BookService;
-import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-@Data
 @Validated
 @CrossOrigin
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("api/public/popularity")
 public class BookController {
