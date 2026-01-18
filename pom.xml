@@ -207,22 +207,30 @@
                                         <limit>
                                             <counter>LINE</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.90</minimum>
+                                            <minimum>1.0</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>COMPLEXITY</counter>
+                                            <value>MISSEDCOUNT</value>
+                                            <maximum>1</maximum>
                                         </limit>
                                     </limits>
                                 </rule>
                                 <rule>
-                                    <element>METHOD</element>
+                                    <element>CLASS</element>
+                                    <includes>
+                                        <include>com.example.demo.service.BookService</include>
+                                    </includes>
                                     <limits>
                                         <limit>
                                             <counter>COMPLEXITY</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.00</minimum>
+                                            <minimum>1.0</minimum>
                                         </limit>
                                         <limit>
                                             <counter>COMPLEXITY</counter>
                                             <value>TOTALCOUNT</value>
-                                            <maximum>3</maximum>
+                                            <maximum>5</maximum>
                                         </limit>
                                     </limits>
                                     <excludes>
