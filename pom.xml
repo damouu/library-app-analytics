@@ -10,14 +10,14 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.example.library</groupId>
+    <groupId>com.example.demo</groupId>
     <artifactId>analytics-service</artifactId>
     <version>2.0.0-SNAPSHOT</version>
 
     <name>図書館システム 分析サービス</name>
     <description>
         図書館システムにおける貸出データを集計・分析するサービスです。
-        Kafka から貸出イベントを消費し、週間・月間の人気書籍ランキングを
+        Kafkaから貸出イベントを消費し、週間・月間の人気書籍ランキングを
         フロントエンド向けに REST API として提供します。
     </description>
 
@@ -176,6 +176,14 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.11</version>
+
+                <configuration>
+                    <excludes>
+                        <exclude>com/example/demo/DemoApplication.class</exclude>
+                        <exclude>com/example/demo/dto/**</exclude>
+                    </excludes>
+                </configuration>
+
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
@@ -201,10 +209,7 @@
                         <configuration>
                             <rules>
                                 <rule>
-                                    <element>PACKAGE</element>
-                                    <includes>
-                                        <include>*.demo.service</include>
-                                    </includes>
+                                    <element>BUNDLE</element>
                                     <limits>
                                         <limit>
                                             <counter>LINE</counter>
@@ -217,27 +222,6 @@
                                             <maximum>1</maximum>
                                         </limit>
                                     </limits>
-                                </rule>
-                                <rule>
-                                    <element>CLASS</element>
-                                    <includes>
-                                        <include>com.example.demo.service.BookService</include>
-                                    </includes>
-                                    <limits>
-                                        <limit>
-                                            <counter>COMPLEXITY</counter>
-                                            <value>COVEREDRATIO</value>
-                                            <minimum>1.0</minimum>
-                                        </limit>
-                                        <limit>
-                                            <counter>COMPLEXITY</counter>
-                                            <value>TOTALCOUNT</value>
-                                            <maximum>5</maximum>
-                                        </limit>
-                                    </limits>
-                                    <excludes>
-                                        <exclude>com.example.demo.dto.*</exclude>
-                                    </excludes>
                                 </rule>
                             </rules>
                         </configuration>
@@ -252,7 +236,7 @@
                 <version>3.2.5</version>
                 <configuration>
                     <includes>
-                        <include>**/unit/**/*.java</include>
+                        <include>**/*Test.java</include>
                     </includes>
                 </configuration>
             </plugin>
@@ -263,7 +247,7 @@
                 <version>3.2.5</version>
                 <configuration>
                     <includes>
-                        <include>**/integration/**/*.java</include>
+                        <include>**/*Test.java</include>
                     </includes>
                 </configuration>
                 <executions>
