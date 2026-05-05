@@ -11,14 +11,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import static org.mockito.ArgumentMatchers.anyMap;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BookController.class)
@@ -31,17 +30,16 @@ class BookControllerTest {
     private BookService bookService;
 
     @Test
-    @DisplayName("GET /public/analytics - Should return a list of Borrow")
+    @DisplayName("GET /public/top-chapters - Should return success data")
     void testReturnBorrowBooks() throws Exception {
-        Map<String, String> responseBody = new HashMap<>();
-        responseBody.put("data", "success");
-
+        Map<String, String> responseBody = Map.of("data", "success");
         ResponseEntity<Map<String, String>> responseEntity = ResponseEntity.ok(responseBody);
 
-        when(bookService.topChapters(anyMap(), anyString())).thenReturn((ResponseEntity) responseEntity);
+
+        when(bookService.topChapters(any(), any())).thenReturn((ResponseEntity) responseEntity);
 
 
-        mockMvc.perform(get("/public/top-chapters").param("page", "0").param("size", "10").param("sort", "id,desc").param("period", "currentweek").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andDo(print());
+        mockMvc.perform(get("/public/top-chapters").param("page", "0").param("size", "10").param("sort", "id,desc").param("period", "currentweek").contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.data").value("success"));
     }
 
 }
