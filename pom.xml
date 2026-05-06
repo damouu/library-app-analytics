@@ -231,6 +231,27 @@
                                         </limit>
                                     </limits>
                                 </rule>
+                                <rule>
+                                    <element>CLASS</element>
+                                    <includes>
+                                        <include>com.example.demo.service*</include>
+                                    </includes>
+                                    <limits>
+                                        <limit>
+                                            <counter>COMPLEXITY</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>1.0</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>COMPLEXITY</counter>
+                                            <value>TOTALCOUNT</value>
+                                            <maximum>4</maximum>
+                                        </limit>
+                                    </limits>
+                                    <excludes>
+                                        <exclude>com.example.demo.dto.*</exclude>
+                                    </excludes>
+                                </rule>
                             </rules>
                         </configuration>
                     </execution>
