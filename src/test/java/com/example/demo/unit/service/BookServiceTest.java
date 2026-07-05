@@ -10,11 +10,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -34,28 +37,34 @@ class BookServiceTest {
     @Test
     void topChapters_ShouldHandleLastWeek() {
         Pageable pageable = PageRequest.of(0, 10);
-        List<ChapterBorrowCountDTO> expectedList = List.of();
-        Mockito.when(dailyChapterStatsRepository.getTopBorrowedChapters(any(LocalDate.class), any(LocalDate.class), eq(pageable))).thenReturn(expectedList);
-        List<ChapterBorrowCountDTO> result = bookService.topChapters(AnalyticsPeriod.LAST_WEEK, pageable);
+        ChapterBorrowCountDTO mockDto = new ChapterBorrowCountDTO(UUID.randomUUID(), 42L, "Le Premier Chapitre", "Sous-titre", 1, "http://example.com/cover.jpg");
+        Page<ChapterBorrowCountDTO> mockResponse = new PageImpl<>(List.of(mockDto));
+        Mockito.when(dailyChapterStatsRepository.getTopBorrowedChapters(any(LocalDate.class), any(LocalDate.class), eq(pageable))).thenReturn(mockResponse);
+        Page<ChapterBorrowCountDTO> result = bookService.topChapters(AnalyticsPeriod.LAST_WEEK, pageable);
         assertNotNull(result);
-        assertEquals(expectedList, result);
+        assertEquals(mockResponse, result);
         verify(dailyChapterStatsRepository).getTopBorrowedChapters(any(LocalDate.class), any(LocalDate.class), eq(pageable));
     }
 
     @Test
     void topChapters_ShouldHandleLastMonth() {
         Pageable pageable = PageRequest.of(0, 10);
-        Mockito.when(dailyChapterStatsRepository.getTopBorrowedChapters(any(LocalDate.class), any(LocalDate.class), eq(pageable))).thenReturn(List.of());
-        List<ChapterBorrowCountDTO> result = bookService.topChapters(AnalyticsPeriod.LAST_MONTH, pageable);
+        ChapterBorrowCountDTO mockDto = new ChapterBorrowCountDTO(UUID.randomUUID(), 42L, "Le Premier Chapitre", "Sous-titre", 1, "http://example.com/cover.jpg");
+        Page<ChapterBorrowCountDTO> mockResponse = new PageImpl<>(List.of(mockDto));
+        Mockito.when(dailyChapterStatsRepository.getTopBorrowedChapters(any(LocalDate.class), any(LocalDate.class), eq(pageable))).thenReturn(mockResponse);
+        Page<ChapterBorrowCountDTO> result = bookService.topChapters(AnalyticsPeriod.LAST_MONTH, pageable);
         assertNotNull(result);
+        assertEquals(mockResponse, result);
         verify(dailyChapterStatsRepository).getTopBorrowedChapters(any(LocalDate.class), any(LocalDate.class), eq(pageable));
     }
 
     @Test
     void topChapters_ShouldHandleCurrentWeek() {
         Pageable pageable = PageRequest.of(0, 10);
-        Mockito.when(dailyChapterStatsRepository.getTopBorrowedChapters(any(LocalDate.class), any(LocalDate.class), eq(pageable))).thenReturn(List.of());
-        List<ChapterBorrowCountDTO> result = bookService.topChapters(AnalyticsPeriod.CURRENT_WEEK, pageable);
+        ChapterBorrowCountDTO mockDto = new ChapterBorrowCountDTO(UUID.randomUUID(), 42L, "Le Premier Chapitre", "Sous-titre", 1, "http://example.com/cover.jpg");
+        Page<ChapterBorrowCountDTO> mockResponse = new PageImpl<>(List.of(mockDto));
+        Mockito.when(dailyChapterStatsRepository.getTopBorrowedChapters(any(LocalDate.class), any(LocalDate.class), eq(pageable))).thenReturn(mockResponse);
+        Page<ChapterBorrowCountDTO> result = bookService.topChapters(AnalyticsPeriod.CURRENT_WEEK, pageable);
         assertNotNull(result);
         verify(dailyChapterStatsRepository).getTopBorrowedChapters(any(LocalDate.class), any(LocalDate.class), eq(pageable));
     }
