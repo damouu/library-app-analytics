@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -36,30 +38,9 @@ class BookControllerTest {
     @DisplayName("GET /public/top-chapters - Should return list of top chapters")
     void getTopChapters_ShouldReturnSuccessData() throws Exception {
         UUID chapterUuid = UUID.randomUUID();
-        ChapterBorrowCountDTO mockDto = new ChapterBorrowCountDTO(
-                chapterUuid,
-                42L,
-                "Le Premier Chapitre",
-                "Sous-titre",
-                1,
-                "http://example.com/cover.jpg"
-        );
-        List<ChapterBorrowCountDTO> mockResponse = List.of(mockDto);
-
-        when(bookService.topChapters(any(AnalyticsPeriod.class), any(Pageable.class)))
-                .thenReturn(mockResponse);
-
-        mockMvc.perform(get("/public/top-chapters")
-                        .param("period", "CURRENT_WEEK")
-                        .param("page", "0")
-                        .param("size", "10")
-                        .param("sort", "id,desc")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$[0].chapterUuid").value(chapterUuid.toString()))
-                .andExpect(jsonPath("$[0].title").value("Le Premier Chapitre"))
-                .andExpect(jsonPath("$[0].borrowCount").value(42));
+        ChapterBorrowCountDTO mockDto = new ChapterBorrowCountDTO(chapterUuid, 42L, "Le Premier Chapitre", "Sous-titre", 1, "http://example.com/cover.jpg");
+        Page<ChapterBorrowCountDTO> mockResponse = new PageImpl<>(List.of(mockDto));
+        when(bookService.topChapters(any(AnalyticsPeriod.class), any(Pageable.class))).thenReturn(mockResponse);
+        mockMvc.perform(get("/public/top-chapters").param("period", "CURRENT_WEEK").param("page", "0").param("size", "10").param("sort", "id,desc").contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.content").isArray()).andExpect(jsonPath("$.content[0].chapterUuid").value(chapterUuid.toString())).andExpect(jsonPath("$.content[0].title").value("Le Premier Chapitre")).andExpect(jsonPath("$.content[0].borrowCount").value(42));
     }
 }
