@@ -6,10 +6,9 @@ import com.example.demo.enums.AnalyticsPeriod;
 import com.example.demo.repository.DailyChapterStatsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 
 @Service
@@ -18,8 +17,9 @@ public class BookService {
 
     private final DailyChapterStatsRepository dailyChapterStatsRepository;
 
-    @Cacheable(value = "top-chapters", key = "#period.name()")
-    public List<ChapterBorrowCountDTO> topChapters(AnalyticsPeriod period, Pageable pageable) {
+
+    @Cacheable(value = "top-chapters", key = "#period.name() + '-' + #pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort")
+    public Page<ChapterBorrowCountDTO> topChapters(AnalyticsPeriod period, Pageable pageable) {
         DateRange range = period.resolve();
         return dailyChapterStatsRepository.getTopBorrowedChapters(range.startDate(), range.endDate(), pageable);
     }
