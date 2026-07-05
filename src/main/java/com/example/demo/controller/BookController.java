@@ -4,6 +4,7 @@ import com.example.demo.dto.ChapterBorrowCountDTO;
 import com.example.demo.enums.AnalyticsPeriod;
 import com.example.demo.service.BookService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -23,7 +24,7 @@ public class BookController {
     private final BookService bookService;
 
     @GetMapping(path = "/top-chapters", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ChapterBorrowCountDTO> returnBorrowBooks(@RequestParam AnalyticsPeriod period, Pageable pageable) {
+    public Page<ChapterBorrowCountDTO> returnBorrowBooks(@RequestParam AnalyticsPeriod period, Pageable pageable) {
         return bookService.topChapters(period, pageable);
     }
 }
