@@ -23,7 +23,7 @@ public class KafkaListeners {
         borrowService.processBorrow(borrowCreatedEvent);
     }
 
-    @KafkaListener(topics = "library.catalog.v1", groupId = "records-group", containerFactory = "factory")
+    @KafkaListener(topics = "library.catalog.v1", groupId = "analytics-group", containerFactory = "factory")
     public void listenerCatalog(@Payload ChapterCreatedEvent chapterCreatedEvent) {
         catalogService.processChapters(chapterCreatedEvent);
     }
