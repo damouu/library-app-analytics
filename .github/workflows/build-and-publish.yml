@@ -10,6 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -24,9 +25,12 @@ jobs:
       - name: Read SHA into Variable
         id: get_sha
         run: |
-          # Read the file content into an environment variable
           echo "SHA=$(cat sha.txt)" >> $GITHUB_ENV
 
+      - name: Checkout EXACT commit
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.SHA }}
 
       - name: Docker Build and Push Action
         uses: mr-smithers-excellent/docker-build-push@v5
